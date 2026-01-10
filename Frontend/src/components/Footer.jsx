@@ -14,8 +14,10 @@ const Footer = () => {
                             <h4>Quick Links</h4>
                             <ul>
                                 <li><a href="#">Home</a></li>
-                                <li><a href="#">Pricing</a></li>
-                                <li><a href="#">Contact</a></li>
+                                <li><a href="#pricing">Courses</a></li>
+                                <li><a href="#pricing">Blog</a></li>
+                                <li><a href="#pricing">Join The Membership</a></li>
+                                <li><a href="#contact">Contact Us</a></li>
                             </ul>
                         </div>
                         <div className="link-group">
