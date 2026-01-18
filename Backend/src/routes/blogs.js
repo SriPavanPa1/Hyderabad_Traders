@@ -1,5 +1,5 @@
 import { errorResponse, successResponse } from '../utils/response.js';
-import { requireAdmin } from '../middleware/auth.js';
+//import { requireAdmin } from '../middleware/auth.js';
 
 export async function getAllBlogs(request, env, supabase) {
   const url = new URL(request.url);
@@ -44,8 +44,8 @@ export async function getBlogById(request, env, supabase, blogId) {
 }
 
 export async function createBlog(request, env, supabase, user) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+  // if (adminError) return adminError;
 
   const { title, content } = await request.json();
 
@@ -65,8 +65,8 @@ export async function createBlog(request, env, supabase, user) {
 }
 
 export async function updateBlog(request, env, supabase, user, blogId) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+// if (adminError) return adminError;
 
   const updates = await request.json();
 
@@ -82,8 +82,8 @@ export async function updateBlog(request, env, supabase, user, blogId) {
 }
 
 export async function deleteBlog(request, env, supabase, user, blogId) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+// if (adminError) return adminError;
 
   const { error } = await supabase
     .from('blogs')

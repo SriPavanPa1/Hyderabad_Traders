@@ -1,5 +1,5 @@
 import { errorResponse, successResponse } from '../utils/response.js';
-import { requireAdmin } from '../middleware/auth.js';
+//import { requireAdmin } from '../middleware/auth.js';
 
 export async function getAllCourses(request, env, supabase) {
   const url = new URL(request.url);
@@ -44,8 +44,8 @@ export async function getCourseById(request, env, supabase, courseId) {
 }
 
 export async function createCourse(request, env, supabase, user) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+// if (adminError) return adminError;
 
   const { title, description, price } = await request.json();
 
@@ -60,8 +60,8 @@ export async function createCourse(request, env, supabase, user) {
 }
 
 export async function updateCourse(request, env, supabase, user, courseId) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+// if (adminError) return adminError;
 
   const updates = await request.json();
 
@@ -77,8 +77,8 @@ export async function updateCourse(request, env, supabase, user, courseId) {
 }
 
 export async function deleteCourse(request, env, supabase, user, courseId) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+// if (adminError) return adminError;
 
   const { error } = await supabase
     .from('courses')

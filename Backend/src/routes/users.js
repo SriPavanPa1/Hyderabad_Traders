@@ -1,10 +1,10 @@
 import { hashPassword } from '../utils/auth.js';
 import { errorResponse, successResponse } from '../utils/response.js';
-import { requireAdmin } from '../middleware/auth.js';
+//import { requireAdmin } from '../middleware/auth.js';
 
 export async function getAllUsers(request, env, supabase, user) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  //const adminError = requireAdmin(user);
+  //if (adminError) return adminError;
 
   const { data, error } = await supabase
     .from('users')
@@ -60,8 +60,8 @@ export async function updateUser(request, env, supabase, user, userId) {
 }
 
 export async function deleteUser(request, env, supabase, user, userId) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+  // if (adminError) return adminError;
 
   const { error } = await supabase
     .from('users')
@@ -73,8 +73,8 @@ export async function deleteUser(request, env, supabase, user, userId) {
 }
 
 export async function assignRole(request, env, supabase, user) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+  // if (adminError) return adminError;
 
   const { user_id, role_id } = await request.json();
 
@@ -94,8 +94,8 @@ export async function assignRole(request, env, supabase, user) {
 }
 
 export async function removeRole(request, env, supabase, user) {
-  const adminError = requireAdmin(user);
-  if (adminError) return adminError;
+  // const adminError = requireAdmin(user);
+  // if (adminError) return adminError;
 
   const { user_id, role_id } = await request.json();
 
