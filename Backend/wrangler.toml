@@ -5,6 +5,10 @@ compatibility_date = "2024-01-01"
 [vars]
 # Add your Supabase URL and anon key here
 SUPABASE_URL = "https://yemulystcsrulbmcnzop.supabase.co"
-SUPABASE_ANON_KEY = "sb_publishable_KbuyFmF-jfHLoy1nQ5YYhA_enqQwvsT"
+SUPABASE_ANON_KEY = "sb_secret_TWIc4aTTv2QexoGxal9KJA_Od2tjDy5"
 
-# For secrets (JWT_SECRET), use: wrangler secret put JWT_SECRET
+# For local development, you can add JWT_SECRET here temporarily
+# REMOVE THIS BEFORE DEPLOYING TO PRODUCTION!
+JWT_SECRET = "f389ae9a-c8c8-4584-a730-997d1d251e78"
+
+# For production, use: wrangler secret put JWT_SECRET

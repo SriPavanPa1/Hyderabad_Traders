@@ -9,24 +9,48 @@ Node.js REST API for managing PostgreSQL database via Supabase, deployable to Cl
 npm install
 ```
 
-2. Configure environment variables in `wrangler.toml`:
+2. **Configure Supabase RLS (Row Level Security):**
+
+   You'll get RLS errors if this isn't configured. Choose one option:
+
+   **Option A: Disable RLS (Quick - Development Only)**
+   ```sql
+   -- Run in Supabase SQL Editor
+   ALTER TABLE users DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE roles DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE user_roles DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE courses DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE user_courses DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE payments DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE blogs DISABLE ROW LEVEL SECURITY;
+   ```
+
+   **Option B: Use Service Role Key (Recommended for Production)**
+   - Get your Service Role key from Supabase Dashboard → Project Settings → API
+   - Use it in step 3 below instead of Anon key
+   - See `SUPABASE_RLS_SETUP.md` for detailed RLS policies
+
+3. Configure environment variables in `wrangler.toml`:
 ```toml
 [vars]
 SUPABASE_URL = "https://your-project.supabase.co"
+# For development with RLS disabled, use anon key:
 SUPABASE_ANON_KEY = "your-anon-key"
+# For production with RLS enabled, use service role key:
+# SUPABASE_ANON_KEY = "your-service-role-key"
 ```
 
-3. Set JWT secret:
+4. Set JWT secret:
 ```bash
 wrangler secret put JWT_SECRET
 ```
 
-4. Run locally:
+5. Run locally:
 ```bash
 npm run dev
 ```
 
-5. Deploy to Cloudflare:
+6. Deploy to Cloudflare:
 ```bash
 npm run deploy
 ```
@@ -112,12 +136,27 @@ Run this SQL in your Supabase SQL editor:
 -- Create tables
 CREATE TABLE users (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
-  password TEXT NOT NULL,
-  mobile TEXT,
-  age INT
+  name VARCHAR NOT NULL,
+  email VARCHAR UNIQUE NOT NULL,
+  mobile VARCHAR,
+  age INT2,
+  password_hash TEXT NOT NULL,
+  is_active BOOL DEFAULT true NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT now() NOT NULL,
+  updated_at TIMESTAMPTZ DEFAULT now() NOT NULL
 );
+
+-- Create trigger to auto-update updated_at
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
+FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 CREATE TABLE roles (
   id SERIAL PRIMARY KEY,
@@ -184,3 +223,45 @@ INSERT INTO roles (role_name) VALUES ('admin'), ('student');
 - All cryptographic operations use native browser/worker APIs
 - No external crypto libraries needed - fully serverless compatible
 - Dev dependency vulnerabilities (wrangler) don't affect production deployment
+
+## Troubleshooting
+
+### Error: "new row violates row-level security policy"
+
+**Cause:** Supabase RLS is enabled but no policies are configured.
+
+**Quick Fix (Development):**
+```sql
+ALTER TABLE users DISABLE ROW LEVEL SECURITY;
+ALTER TABLE roles DISABLE ROW LEVEL SECURITY;
+ALTER TABLE user_roles DISABLE ROW LEVEL SECURITY;
+ALTER TABLE courses DISABLE ROW LEVEL SECURITY;
+ALTER TABLE user_courses DISABLE ROW LEVEL SECURITY;
+ALTER TABLE payments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE blogs DISABLE ROW LEVEL SECURITY;
+```
+
+**Production Fix:** Use Service Role key and enable RLS with proper policies. See `SUPABASE_RLS_SETUP.md` for details.
+
+### Error: "Name, email, and password are required"
+
+**Cause:** Sending wrong field names in request body.
+
+**Fix:** Send `password` (not `password_hash`). Don't send `created_at`, `updated_at`, or `is_active` on registration.
+
+**Correct request:**
+```json
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "mobile": "1234567890",
+  "age": 25
+}
+```
+
+### Error: "Invalid token" or "Unauthorized"
+
+**Cause:** JWT token expired or invalid.
+
+**Fix:** Login again to get a new token (tokens expire after 7 days).

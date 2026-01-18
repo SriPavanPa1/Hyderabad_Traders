@@ -9,7 +9,9 @@ export default {
       return await handleRequest(request, env, supabase);
     } catch (error) {
       console.error('Error:', error);
-      return errorResponse('Internal server error', 500);
+      console.error('Error stack:', error.stack);
+      console.error('Error message:', error.message);
+      return errorResponse(`Internal server error: ${error.message}`, 500);
     }
   },
 };

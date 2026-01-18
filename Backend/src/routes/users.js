@@ -9,7 +9,7 @@ export async function getAllUsers(request, env, supabase, user) {
   const { data, error } = await supabase
     .from('users')
     .select(`
-      id, name, email, mobile, age,
+      id, name, email, mobile, age, is_active, created_at, updated_at,
       user_roles(role_id, roles(role_name))
     `);
 
@@ -21,7 +21,7 @@ export async function getUserById(request, env, supabase, user, userId) {
   const { data, error } = await supabase
     .from('users')
     .select(`
-      id, name, email, mobile, age,
+      id, name, email, mobile, age, is_active, created_at, updated_at,
       user_roles(role_id, roles(role_name))
     `)
     .eq('id', userId)
@@ -34,9 +34,15 @@ export async function getUserById(request, env, supabase, user, userId) {
 export async function updateUser(request, env, supabase, user, userId) {
   const updates = await request.json();
   
+  // Hash password if provided
   if (updates.password) {
-    updates.password = await hashPassword(updates.password);
+    updates.password_hash = await hashPassword(updates.password);
+    delete updates.password;
   }
+
+  // Don't allow updating these fields directly
+  delete updates.id;
+  delete updates.created_at;
 
   const { data, error } = await supabase
     .from('users')
@@ -46,6 +52,10 @@ export async function updateUser(request, env, supabase, user, userId) {
     .single();
 
   if (error) return errorResponse(error.message);
+  
+  // Remove password_hash from response
+  delete data.password_hash;
+  
   return successResponse(data, 'User updated');
 }
 
