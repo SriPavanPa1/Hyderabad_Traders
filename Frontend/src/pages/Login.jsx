@@ -1,11 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
+import LoginComponent from '../components/Auth/Login'
+import SignUpComponent from '../components/Auth/SignUp'
+import ForgotPasswordComponent from '../components/Auth/ForgotPassword'
 
 function Login() {
+  const [authMode, setAuthMode] = useState('login') // 'login', 'signup', 'forgot'
+
+  const switchToSignUp = () => setAuthMode('signup')
+  const switchToLogin = () => setAuthMode('login')
+  const switchToForgotPassword = () => setAuthMode('forgot')
+
   return (
-    <div className="login-page">
-      <h1>Login</h1>
-      <p>Sign in to your account.</p>
-      {/* Add login form here */}
+    <div>
+      {authMode === 'login' && (
+        <LoginComponent 
+          onSwitchToSignUp={switchToSignUp}
+          onSwitchToForgotPassword={switchToForgotPassword}
+        />
+      )}
+      {authMode === 'signup' && (
+        <SignUpComponent 
+          onSwitchToLogin={switchToLogin}
+        />
+      )}
+      {authMode === 'forgot' && (
+        <ForgotPasswordComponent 
+          onSwitchToLogin={switchToLogin}
+        />
+      )}
     </div>
   )
 }
