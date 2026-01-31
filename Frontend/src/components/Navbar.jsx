@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import logoImg from '../assets/logo.png'
 
 const Navbar = () => {
@@ -6,20 +7,22 @@ const Navbar = () => {
         <nav className="navbar">
             <div className="container nav-content">
                 <div className="logo-area">
-                    <img src={logoImg} alt="Hyderabad Trader Logo" className="nav-logo" />
-                    <span className="logo-text">HYDERABAD TRADER</span>
+                    <Link to="/">
+                        <img src={logoImg} alt="Hyderabad Trader Logo" className="nav-logo" />
+                        <span className="logo-text">HYDERABAD TRADER</span>
+                    </Link>
                 </div>
 
                 <ul className="nav-links">
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#pricing">Courses</a></li>
-                    <li><a href="#blog">Blog</a></li>
-                    {/* <li><a href="#membership">Join The Membership</a></li> */}
-                    <li><a href="#contact">Contact Us</a></li>
+                    <li><Link to="/">Home</Link></li>
+                    <li><Link to="/courses">Courses</Link></li>
+                    <li><Link to="/blog">Blog</Link></li>
+                    {/* <li><Link to="/membership">Join The Membership</Link></li> */}
+                    <li><Link to="/contact">Contact Us</Link></li>
                 </ul>
 
                 <div className="nav-actions">
-                    <button className="login-btn">Login</button>
+                    <Link to="/login" className="login-btn">Login</Link>
                 </div>
             </div>
         </nav>

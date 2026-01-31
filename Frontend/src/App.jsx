@@ -1,25 +1,26 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
-import Hero from './components/Hero'
-import Learning from './components/Learning'
-import Pricing from './components/Pricing'
-import Features from './components/Features'
-import EventBanner from './components/EventBanner'
-import Testimonials from './components/Testimonials'
-import FAQ from './components/FAQ'
 import Footer from './components/Footer'
+import Home from './pages/Home'
+import Courses from './pages/Courses'
+import Blog from './pages/Blog'
+import Contact from './pages/Contact'
+import Login from './pages/Login'
 
 function App() {
   return (
     <div className="app">
       <Navbar />
-      <Hero />
-      <Learning />
-      <Features />
-      <Pricing />
-      <EventBanner />
-      <Testimonials />
-      <FAQ />
+      <main className="main-content">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </main>
       <Footer />
     </div>
   )
