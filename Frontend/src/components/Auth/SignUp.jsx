@@ -223,7 +223,9 @@ function SignUp({ onSwitchToLogin }) {
                 />
               </div>
             </div>
+          </div>
 
+          <div className="form-row form-row.full">
             <div className="form-group">
               <label htmlFor="gender">Gender</label>
               <div className="input-wrapper">
