@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import { Mail, Lock, Eye, EyeOff, Loader } from 'lucide-react'
+import { useAuth } from '../../context/AuthContext'
 import '../../styles/Auth.css'
 
 function Login({ onSwitchToSignUp, onSwitchToForgotPassword }) {
+  const { login } = useAuth()
   const [formData, setFormData] = useState({
-    email: '',
-    password: ''
+    email: 'admin@hyderabad.com',
+    password: 'admin123',
+    role: 'admin'
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -52,20 +55,21 @@ function Login({ onSwitchToSignUp, onSwitchToForgotPassword }) {
         user: {
           id: 1,
           email: formData.email,
-          name: 'User'
+          name: 'User',
+          role: formData.role
         }
       }
 
       setSuccess(response.message)
       
-      // Store token in localStorage
-      localStorage.setItem('authToken', response.token)
-      localStorage.setItem('user', JSON.stringify(response.user))
+      // Store token and user data in localStorage and context
+      login(response.user, response.token)
 
       // Reset form
       setFormData({
         email: '',
-        password: ''
+        password: '',
+        role: 'student'
       })
 
       // Redirect after success
@@ -129,6 +133,21 @@ function Login({ onSwitchToSignUp, onSwitchToForgotPassword }) {
                 {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="role">Login as</label>
+            <select
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              disabled={loading}
+              className="role-select"
+            >
+              <option value="student">Student</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
 
           <button
